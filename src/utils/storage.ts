@@ -30,6 +30,7 @@ export class Storage {
     }
   }
 
+
   static hasValidPreferences(): boolean {
     const prefs = this.getPreferences();
     if (!prefs) return false;

@@ -16,7 +16,7 @@ export class ApiKeyManager {
     }
 
     const envVar = providerType === 'openai' ? 'OPENAI_API_KEY' : 'GROQ_API_KEY';
-    
+
     // Check if API key already exists in .env
     if (envContent.includes(`${envVar}=`)) {
       // Replace existing API key
@@ -34,17 +34,23 @@ export class ApiKeyManager {
     console.log(`${providerType.toUpperCase()} API key has been stored in .env file`);
   }
 
-  static removeApiKey(providerType: string) {
+  static removeApiKey(providerType: string, all: boolean = false) {
     const envPath = path.join(process.cwd(), '.env');
-    
+
     if (!fs.existsSync(envPath)) {
       console.log('No API key found to remove');
       return;
     }
 
     let envContent = fs.readFileSync(envPath, 'utf8');
-    const envVar = providerType === 'openai' ? 'OPENAI_API_KEY' : 'GROQ_API_KEY';
-    
+    const envVar = all ? 'all' : providerType === 'openai' ? 'OPENAI_API_KEY' : 'GROQ_API_KEY';
+
+    if (all) {
+      envContent = envContent.replace(/OPENAI_API_KEY=.*\n?/g, '');
+      envContent = envContent.replace(/GROQ_API_KEY=.*\n?/g, '');
+      return
+    }
+
     if (envContent.includes(`${envVar}=`)) {
       // Remove the API key line
       envContent = envContent.replace(new RegExp(`${envVar}=.*\n?`), '');

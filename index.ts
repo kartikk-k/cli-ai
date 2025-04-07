@@ -6,6 +6,7 @@ import { Storage } from './src/utils/storage';
 import { ApiKeyManager } from './src/utils/apiKeyManager';
 import { Setup } from './src/utils/setup';
 import { initializeProvider, askAI } from './src/askAI';
+import { PROVIDER_MODELS } from './src/utils/config';
 
 // Configure marked for terminal output
 marked.setOptions({
@@ -22,33 +23,47 @@ program
     .addHelpText('after', `
 Examples:
   $ ai-chat "What is the capital of France?"
-  $ ai-chat --set-api "your-api-key" --provider openai
-  $ ai-chat --remove-api --provider openai
-  $ ai-chat --model "gpt-4" "What is the capital of France?"
+  $ ai-chat --set-api "your-api-key"
+  $ ai-chat --remove-api
+  $ ai-chat --reset
   $ ai-chat --help
 `);
 
 program
     .option('--set-api <key>', 'Set and store API key')
     .option('--remove-api', 'Remove stored API key')
-    .option('--provider <provider>', 'Set AI provider to use (openai or groq)')
-    .option('--model <model>', 'Set model to use')
+    .option('--provider', 'Select AI provider')
+    .option('--model', 'Select model')
+    .option('--reset', 'Reset API keys')
     .argument('[question]', 'Question to ask the AI')
     .action(async (question: string, options: {
         setApi?: string;
         removeApi?: boolean;
         provider?: string;
-        model?: string
+        model?: string;
+        reset?: string;
     }) => {
         try {
-            // Handle API key operations
-            if (options.removeApi) {
-                ApiKeyManager.removeApiKey(options.provider || 'openai');
+            if(options.reset) {
+                await Setup.resetPreferences();
+                console.log('Preferences reset successfully');
                 return;
             }
 
-            let providerType = options.provider;
-            let model = options.model;
+            // Handle API key operations
+            if (options.removeApi) {
+                const { provider } = await inquirer.prompt({
+                    type: 'list',
+                    name: 'provider',
+                    message: 'Select provider to remove API key from:',
+                    choices: Object.keys(PROVIDER_MODELS),
+                });
+                ApiKeyManager.removeApiKey(provider);
+                return;
+            }
+
+            let providerType: string;
+            let model: string;
             let apiKey = options.setApi;
 
             // Check if we have valid preferences
@@ -60,8 +75,30 @@ program
             } else {
                 const preferences = Storage.getPreferences();
                 if (preferences) {
-                    providerType = providerType || preferences.provider;
-                    model = model || preferences.model;
+                    // Only ask for provider if --provider flag is used
+                    if (options.provider) {
+                        const setup = await Setup.setupProvider();
+                        providerType = setup.provider;
+                        model = setup.model;
+                        apiKey = setup.apiKey;
+                    } else {
+                        providerType = preferences.provider;
+                    }
+
+                    // Only ask for model if --model flag is used
+                    if (options.model) {
+                        const setup = await Setup.setupProvider();
+                        providerType = setup.provider;
+                        model = setup.model;
+                        apiKey = setup.apiKey;
+                    } else {
+                        model = preferences.model;
+                    }
+                } else {
+                    const setup = await Setup.setupProvider();
+                    providerType = setup.provider;
+                    model = setup.model;
+                    apiKey = setup.apiKey;
                 }
             }
 

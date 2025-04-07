@@ -9,7 +9,7 @@ export class GroqProvider extends BaseProvider {
     this.apiKey = apiKey;
   }
 
-  async ask(question: string, model: string = 'mixtral-8x7b-32768'): Promise<string> {
+  async ask(question: string, model: string = 'llama-3.1-8b-instant'): Promise<string> {
     const response = await fetch(`${this.baseUrl}/chat/completions`, {
       method: 'POST',
       headers: {
