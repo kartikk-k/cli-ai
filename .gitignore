@@ -2,3 +2,6 @@ node_modules
 
 # environment variables
 .env*
+
+# ai-chat preferences
+.ai-chat-preferences.json
