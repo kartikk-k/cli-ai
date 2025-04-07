@@ -1,6 +1,7 @@
 {
-    "name": "terminal.ai",
+    "name": "help-me-ai",
     "module": "index.ts",
+    "version": "1.0.0",
     "type": "module",
     "devDependencies": {
         "@types/bun": "latest",
