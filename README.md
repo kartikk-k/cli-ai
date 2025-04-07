@@ -1,4 +1,4 @@
-# terminal.ai
+# cli-ai
 
 To install dependencies:
 
@@ -14,13 +14,11 @@ bun run index.ts "your question"
 
 ### Flags
 
-`--remove-api`: Remove stored API key
+`--provider`: Switch AI provider [OpenAI, Groq]
 
-`--provider`: Select AI provider
+`--model`: Switch model
 
-`--model`: Select model
-
-`--reset`: Reset API keys
+`--reset`: Reset/Remove API keys
 
 ### Use `ask-ai` command
 
@@ -30,4 +28,4 @@ Add alias in `~/.zshrc`
 alias ask-ai="bun run path-to-your-project/index.ts"
 ```
 
-Then reload the shell
+Reload the shell or open a new terminal
