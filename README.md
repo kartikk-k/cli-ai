@@ -9,7 +9,25 @@ bun install
 To run:
 
 ```bash
-bun run index.ts
+bun run index.ts "your question"
 ```
 
-This project was created using `bun init` in bun v1.1.34. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+### Flags
+
+`--remove-api`: Remove stored API key
+
+`--provider`: Select AI provider
+
+`--model`: Select model
+
+`--reset`: Reset API keys
+
+### Use `ask-ai` command
+
+Add alias in `~/.zshrc`
+
+```bash
+alias ask-ai="bun run path-to-your-project/index.ts"
+```
+
+Then reload the shell
