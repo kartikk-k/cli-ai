@@ -7,6 +7,7 @@ import { ApiKeyManager } from './src/utils/apiKeyManager';
 import { Setup } from './src/utils/setup';
 import { initializeProvider, askAI } from './src/askAI';
 import { PROVIDER_MODELS } from './src/utils/config';
+import { getOS } from './src/utils/getOS';
 
 // Configure marked for terminal output
 marked.setOptions({
@@ -124,7 +125,7 @@ program
                 question = userQuestion;
             }
 
-            await askAI(question, model!);
+            await askAI(`Operating System: ${getOS()}\n` + question, model!);
             process.exit(0); // Exit after one question
         } catch (error: any) {
             console.error('Error:', error.message);
