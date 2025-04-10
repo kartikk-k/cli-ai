@@ -6,6 +6,7 @@ import path from 'path';
 import fs from 'fs';
 import { Storage } from './utils/storage';
 import { ApiKeyManager } from './utils/apiKeyManager';
+import os from 'os';
 
 // Initialize provider
 let provider: OpenAIProvider | GroqProvider;
@@ -46,7 +47,7 @@ export async function askAI(question: string, model: string) {
     // Check if error is due to incorrect API key
     if (error.message?.includes('Incorrect API key provided')) {
       // Remove preferences file
-      const prefsPath = path.join(process.cwd(), '.ai-chat-preferences.json');
+      const prefsPath = path.join(os.homedir(), '.ai-chat-preferences.json');
       if (fs.existsSync(prefsPath)) {
         fs.unlinkSync(prefsPath);
       }

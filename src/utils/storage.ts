@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 import { ApiKeyManager } from './apiKeyManager';
 
 interface Preferences {
@@ -7,7 +8,7 @@ interface Preferences {
   model: string;
 }
 
-const STORAGE_FILE = path.join(process.cwd(), '.ai-chat-preferences.json');
+const STORAGE_FILE = path.join(os.homedir(), '.ai-chat-preferences.json');
 
 export class Storage {
   static getPreferences(): Preferences | null {
